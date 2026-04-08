@@ -12,6 +12,7 @@ app.get('/api/saludo', (req, res) => {
   res.json({
     mensaje: "Hola desde el backend",
     estudiante: "Yessner Yoel Cruz Morales",
+    colaborador: "Jose Lumbi", // 👈 agregado
     universidad: "UNCSM",
     unidad: "Unidad II"
   });
