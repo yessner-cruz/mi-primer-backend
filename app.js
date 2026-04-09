@@ -14,6 +14,7 @@ app.get('/api/saludo', (req, res) => {
     estudiante: "Yessner Yoel Cruz Morales",
     colaborador: "Jose Lumbi", // 👈 agregado
     colaborador2: "Steven Barboza", // 👈 agregado
+    colaborador3: "Enoc Noguera", // 👈 agregado
     universidad: "UNCSM",
     unidad: "Unidad II"
   });
