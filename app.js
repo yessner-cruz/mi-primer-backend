@@ -13,29 +13,29 @@ const PORT = process.env.PORT || 3000;
 // Logger: registra fecha, método y ruta
 app.use((req, res, next) => {
   const tiempo = new Date().toISOString();
-  console.log(`[LOG] ${tiempo} | Método: ${req.method} | URL: ${req.url}`);
+  console.log(`[AUDITORÍA] ${tiempo} | Método: ${req.method} | URL: ${req.url}`);
   next();
 });
 
-// Middleware built-in para leer JSON
+// Middleware built-in para JSON
 app.use(express.json());
 
-// Body-parser para JSON y formularios
+// Body-parser para formularios
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Servir archivos estáticos de la carpeta public
+// Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ===============================
-// MIDDLEWARE LOCAL DE SEGURIDAD
+// MIDDLEWARE LOCAL (SEGURIDAD)
 // ===============================
 
 const validarAcceso = (req, res, next) => {
   const token = req.query.token;
 
   if (token === 'admin123') {
-    next(); // permite continuar a la ruta protegida
+    next();
   } else {
     res
       .status(401)
@@ -47,10 +47,21 @@ const validarAcceso = (req, res, next) => {
 // RUTAS
 // ===============================
 
-// Endpoint inicial
+// Endpoint inicial (con validación)
 app.get('/api/saludo', (req, res) => {
+  const llave = req.query.llave;
+
+  if (llave !== 'Casimiro2026') {
+    return res
+      .status(401)
+      .send('<h1>401 - No autorizado</h1><p>Se requiere una llave válida.</p>');
+  }
+
+  console.log("Acceso concedido ✅");
+
   res.json({
     mensaje: 'Hola desde el backend',
+    mensaje2: '🚀 Acceso autorizado al backend',
     estudiante: 'Yessner Yoel Cruz Morales',
     colaborador: 'Jose Lumbi',
     colaborador2: 'Steven Barboza',
@@ -82,7 +93,7 @@ app.get('/users/:id', (req, res) => {
   });
 });
 
-// Ruta protegida con middleware local
+// Ruta protegida
 app.get('/api/recurso', validarAcceso, (req, res) => {
   res.json({
     estado: 'Conexión exitosa',
@@ -91,16 +102,36 @@ app.get('/api/recurso', validarAcceso, (req, res) => {
   });
 });
 
-// ===============================
-// MIDDLEWARE FINAL 404
-// ===============================
-
-app.use((req, res) => {
-  res.status(404).send('<h1>404 - Página no encontrada</h1><p>La ruta solicitada no existe en este servidor.</p>');
+// Ruta para forzar error 500
+app.get('/api/error', (req, res) => {
+  throw new Error("Error forzado de prueba");
 });
 
 // ===============================
-// ENCENDER SERVIDOR
+// MIDDLEWARE 404
+// ===============================
+
+app.use((req, res) => {
+  res.status(404).send(
+    '<h1>404 - Página no encontrada</h1><p>La ruta solicitada no existe en este servidor.</p>'
+  );
+});
+
+// ===============================
+// MIDDLEWARE 500
+// ===============================
+
+app.use((err, req, res, next) => {
+  console.error('[ERROR 500]', err.stack);
+
+  res.status(500).send(`
+    <h1>500 - Error interno del servidor</h1>
+    <p>Ocurrió un fallo inesperado.</p>
+  `);
+});
+
+// ===============================
+// SERVIDOR
 // ===============================
 
 app.listen(PORT, () => {
