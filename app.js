@@ -66,6 +66,7 @@ app.get('/api/saludo', (req, res) => {
     colaborador: 'Jose Lumbi',
     colaborador2: 'Steven Barboza',
     colaborador3: 'Enoc Noguera',
+    colaborador4: 'Amilkar Solorzano',
     universidad: 'UNCSM',
     unidad: 'Unidad II'
   });
