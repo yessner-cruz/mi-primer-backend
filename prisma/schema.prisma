@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Acceso {
+  id              Int      @id @default(autoincrement())
+  usuarioAsignado String   @map("usuario_asignado") @db.NVarChar(100)
+  tokenLlave      String   @unique @map("token_llave") @db.NVarChar(100)
+  activo          Boolean  @default(true)
+  fechaCreacion   DateTime @default(now()) @map("fecha_creacion") @db.DateTime2
+
+  @@map("llaves_acceso")
+}
+
+model AuditoriaAcceso {
+  id            Int      @id @default(autoincrement())
+  ruta          String   @db.NVarChar(200)
+  metodo        String   @db.NVarChar(20)
+  tokenRecibido String?  @map("token_recibido") @db.NVarChar(100)
+  resultado     String   @db.NVarChar(50)
+  ip            String?  @db.NVarChar(100)
+  fecha         DateTime @default(now()) @db.DateTime2
+
+  @@map("auditoria_acceso")
+}
